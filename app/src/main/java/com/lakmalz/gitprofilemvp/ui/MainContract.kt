@@ -1,21 +1,17 @@
 package com.lakmalz.gitprofilemvp.ui
 
 import com.lakmalz.gitprofilemvp.base.BaseContract
-import com.lakmalz.gitprofilemvp.model.UserModel
+import com.lakmalz.gitprofilemvp.datasource.model.User
+import com.lakmalz.gitprofilemvp.util.AppResult
 
 class MainContract {
 
     interface View : BaseContract.View {
-        fun showProgress(show: Boolean)
-        fun showErrorMessage(error: String)
-        fun loadDataSuccess(data: String)
+        fun loadDataSuccess(data: User?)
     }
 
     interface Presenter : BaseContract.Presenter<View> {
-        fun loadData()
+         fun loadData()
     }
 
-    interface Model {
-        fun userProfileData(): UserModel
-    }
 }

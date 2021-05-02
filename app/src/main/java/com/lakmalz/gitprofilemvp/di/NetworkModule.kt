@@ -5,6 +5,10 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo.cache.http.ApolloHttpCache
 import com.apollographql.apollo.cache.http.DiskLruHttpCacheStore
+import com.lakmalz.gitprofilemvp.datasource.network.GraphqlServices
+import com.lakmalz.gitprofilemvp.datasource.repository.UserRepository
+import com.lakmalz.gitprofilemvp.datasource.repository.remote.RemoteData
+import com.lakmalz.gitprofilemvp.ui.MainPresenter
 import com.lakmalz.gitprofilemvp.util.AuthorizationInterceptor
 import com.lakmalz.gitprofilemvp.util.BASE_URL
 import com.lakmalz.gitprofilemvp.util.CACHE_DIR
@@ -13,6 +17,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import io.reactivex.disposables.CompositeDisposable
 import okhttp3.OkHttpClient
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -51,5 +56,22 @@ class NetworkModule {
             .httpCache(ApolloHttpCache(diskLruHttpCacheStore))
             .defaultHttpCachePolicy(HttpCachePolicy.CACHE_FIRST.expireAfter(1, TimeUnit.MINUTES))
             .build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideGraphqlServices(apolloClient: ApolloClient): GraphqlServices {
+        return GraphqlServices(apolloClient)
+    }
+
+    @Singleton
+    @Provides
+    fun provideRemoteData(graphqlServices: GraphqlServices): RemoteData {
+        return RemoteData(graphqlServices)
+    }
+    @Singleton
+    @Provides
+    fun provideUserRepository(remoteData: RemoteData): UserRepository {
+        return UserRepository(remoteData)
     }
 }

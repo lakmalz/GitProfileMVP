@@ -1,0 +1,44 @@
+query GetUserProfile($login: String!) {
+    user(login: $login) {
+        name
+        login
+        email
+        avatarUrl
+        followers {
+            totalCount
+        }
+        following {
+            totalCount
+        }
+        pinnedItems(first: 3) {
+            nodes {
+                ...RepositoryFragment
+            }
+        }
+        topRepositories(first: 10, orderBy: {field: UPDATED_AT, direction: ASC}) {
+            nodes {
+                ...RepositoryFragment
+            }
+        }
+        starredRepositories(first: 10) {
+            nodes {
+                ...RepositoryFragment
+            }
+        }
+    }
+}
+
+fragment RepositoryFragment on Repository {
+    id
+    name
+    description
+    stargazerCount
+    owner {
+        avatarUrl
+        login
+    }
+    primaryLanguage {
+        name
+        color
+    }
+}
